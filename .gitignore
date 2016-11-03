@@ -3,5 +3,4 @@
 .project
 .settings/
 bin/**
-build.gradle
 /build/

@@ -1,0 +1,73 @@
+allprojects {
+    apply plugin: 'java'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    compileJava.options.fork = true
+	compileJava.options.forkOptions.executable = gradle.javacPath
+	
+	archivesBaseName = gradle.theName
+	group = gradle.theGroup
+	
+	repositories {
+	    mavenCentral()
+	}
+	
+	gradle.projectsEvaluated {
+   		tasks.withType(JavaCompile) {
+       		options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    	}
+	}
+	
+	dependencies {
+		compile group: 'javax', name: 'javaee-api', version: '7.0'
+		compile group: 'log4j', name: 'log4j', version: '1.2.17'
+		compile group: 'org.hibernate', name: 'hibernate-core', version: '5.0.0.Final'
+		compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.0.0.Final'
+		compile group: 'org.hibernate', name: 'hibernate-infinispan', version: '5.0.0.Final'
+		compile group: 'org.hibernate', name: 'hibernate-annotations', version: '3.5.6-Final'
+		
+		compile group: 'org.jasypt', name: 'jasypt-hibernate4', version: '1.9.0'
+		//runtime 'org.hibernate:hibernate-search-orm:5.1.1.Final'
+	 	//runtime 'org.jasypt:jasypt-hibernate4:1.9.0'
+		
+	}
+	
+	configurations {
+	 runtime.exclude group: "org.slf4j", module: "slf4j-api"
+	 runtime.exclude group: "org.slf4j", module: "slf4j-parent"
+	 runtime.exclude group: "org.jboss", module: "jboss-parent"
+	 runtime.exclude group: "org.dom4j"
+	}
+}
+
+apply plugin: 'ear'
+apply plugin: 'war'
+
+archivesBaseName = gradle.theName
+group = gradle.theGroup
+
+
+task copyToLib(type: Copy) {
+    into "$buildDir/output/libs"
+    from configurations.runtime
+}
+
+dependencies {
+	//Unecessary if they exist in container
+	//earlib group: 'org.hibernate', name: 'hibernate-infinispan', version: '5.0.0.Final'
+	//earlib group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.0.0.Final'
+	//earlib group: 'org.hibernate', name: 'hibernate-core', version: '5.0.0.Final'
+	//earlib group: 'dom4j', name: 'dom4j', version: '1.6.1'
+	
+	//The two below may cause compatibility issues
+	//earlib group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.1.0.Final'
+	//earlib group: 'org.hibernate', name: 'hibernate-validator-annotation-processor', version: '5.1.0.Final'
+	
+	//earlib group: 'org.jasypt', name: 'jasypt-hibernate4', version: '1.9.0'    	
+	deploy project(':ejb')
+    deploy project(path:':web', configuration:'archives')
+}
+
+ear{
+	libDirName 'APP-INF/lib'
+}
