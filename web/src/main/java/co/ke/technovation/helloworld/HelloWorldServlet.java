@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import co.ke.technovation.ejb.MsisdnEJBI;
 
-@WebServlet("/index")
+@WebServlet("/index.jsp")
 public class HelloWorldServlet extends HttpServlet {
 	
 	@EJB
@@ -25,13 +25,13 @@ public class HelloWorldServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		msisdnEJB.testWrite("254720988636");
-		resp.getWriter().println(".. in doGet() ..");
+		resp.getWriter().println(".. Tres Bien ..");
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		//msisdnEJB.testWrite("254720988636");
-		resp.getWriter().println(".. in doGet() ..");
+		resp.getWriter().println(".. Tres Bien ..");
 	}
 	
 	
