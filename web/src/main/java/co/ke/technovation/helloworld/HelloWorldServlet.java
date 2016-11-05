@@ -10,12 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import co.ke.technovation.ejb.MsisdnEJBI;
+import co.ke.technovation.ejb.RedCrossPaymentsEJBI;
 
 @WebServlet("/index.jsp")
 public class HelloWorldServlet extends HttpServlet {
 	
 	@EJB
-	private MsisdnEJBI msisdnEJB;
+	private RedCrossPaymentsEJBI paymentsEJBI;
 
 	/**
 	 * 
@@ -24,13 +25,12 @@ public class HelloWorldServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		msisdnEJB.testWrite("254720988636");
-		resp.getWriter().println(".. Tres Bien ..");
+		doPost(req, resp);
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//msisdnEJB.testWrite("254720988636");
+		paymentsEJBI.mimicPayment();
 		resp.getWriter().println(".. Tres Bien ..");
 	}
 	

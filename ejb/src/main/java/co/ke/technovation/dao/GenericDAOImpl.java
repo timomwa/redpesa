@@ -31,8 +31,7 @@ public class GenericDAOImpl<T, ID extends Serializable> implements GenericDAOI<T
 		this.persistentClass = persistentClass;
 	}
 	
-	//@PersistenceContext(unitName=AppPropertyHolder.PERSISTENCE_UNIT_NAME)
-	@PersistenceContext
+	@PersistenceContext(unitName=AppPropertyHolder.CMP_PERSISTENCE_UNIT_NAME)
 	protected EntityManager em;
 	
 	private Logger log = Logger.getLogger(getClass());

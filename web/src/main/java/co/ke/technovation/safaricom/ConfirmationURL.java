@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringReader;
+import java.math.BigDecimal;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -12,18 +14,27 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 import co.ke.technovation.ejb.MpesaRawEJBI;
+import co.ke.technovation.ejb.RedCrossPaymentsEJBI;
 import co.ke.technovation.ejb.XMLUtilsI;
 import co.ke.technovation.entity.CallType;
+import co.ke.technovation.entity.RedCrossPayment;
 
 @WebServlet("/mpesa/confirmation")
 public class ConfirmationURL extends HttpServlet {
 	
 	@EJB
 	private MpesaRawEJBI mpesaInflowEJB;
+	
+	@EJB
+	private RedCrossPaymentsEJBI paymentsEJBI;
 	
 	@EJB
 	private XMLUtilsI xmlUtils;
@@ -72,11 +83,26 @@ public class ConfirmationURL extends HttpServlet {
 			sb.append("\t\t MSISDN :").append(msisdn).append("\n");
 			
 			
+			mpesaInflowEJB.logRequest(xml, CallType.CONFIRMATION);
+			
+			RedCrossPayment payment = new RedCrossPayment();
+			payment.setAmount(  xmlUtils.toBigDecimal( transAmount ) );
+			payment.setIs_processed(Boolean.FALSE);
+			payment.setPhone_number(msisdn);
+			payment.setTelco_transaction_id(transID);
+			
+			payment = xmlUtils.populateValues(xml, payment);
+			
+
+			sb.append("\t\t First name :").append(payment.getFirst_name()).append("\n");
+			sb.append("\t\t Last name :").append(payment.getLast_name()).append("\n");
+			
 			logger.info( "\n\n ConfirmationURL --> "+ xml +"\n\n");
 			
 			logger.info( "\n\n Extracted --> "+ sb.toString() +"\n\n");
 			
-			mpesaInflowEJB.logRequest(xml, CallType.CONFIRMATION);
+			
+			paymentsEJBI.savePayment(payment);
 			
 			resp.setContentType("text/xml");
 			pw.println(response);

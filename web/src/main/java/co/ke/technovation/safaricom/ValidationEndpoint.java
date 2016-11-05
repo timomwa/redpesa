@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -24,6 +25,8 @@ public class ValidationEndpoint extends HttpServlet {
 	
 	@EJB
 	private MpesaRawEJBI mpesaInflowEJB;
+	
+	private final BigDecimal MIN_AMOUNT = BigDecimal.valueOf(50);
 	
 	private Logger logger = Logger.getLogger(getClass());
 	private String response =  "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" "
@@ -75,7 +78,6 @@ public class ValidationEndpoint extends HttpServlet {
 			sb.append("\t\t InvoiceNumber :").append(InvoiceNumber).append("\n");
 			sb.append("\t\t MSISDN :").append(MSISDN).append("\n");
 			
-			
 			logger.info( "\n\n ConfirmationURL --> "+ xml +"\n\n");
 			
 			logger.info( "\n\n Extracted --> "+ sb.toString() +"\n\n");
@@ -88,6 +90,9 @@ public class ValidationEndpoint extends HttpServlet {
 			
 			logger.info( "\n\n Extracted --> "+ resp_const +"\n\n");
 			
+			if(xmlUtils.toBigDecimal(TransAmount).compareTo(MIN_AMOUNT)<0)
+				throw new Exception("Amount is less than Kes. 50. Payment rejected.");
+		
 			pw.println(resp_const);
 			
 		}catch(Exception e){

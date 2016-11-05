@@ -30,7 +30,7 @@ public class MpesaRawEJBImpl implements MpesaRawEJBI {
 			rawlog.setMsisdn( xmlUtils.getValue(xml, "MSISDN") );
 			rawlog.setTransId(  xmlUtils.getValue(xml, "TransID")  );
 			rawlog.setCallType(callType);
-			rawlog.setTransAmount( xmlUtils.toBigint( xmlUtils.getValue(xml, "TransAmount") )  );
+			rawlog.setTransAmount( xmlUtils.toBigDecimal( xmlUtils.getValue(xml, "TransAmount") )  );
 			mpesarawDAO.save(rawlog);
 			
 		}catch(Exception e){

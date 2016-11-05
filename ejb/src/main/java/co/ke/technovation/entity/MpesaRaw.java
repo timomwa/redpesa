@@ -14,10 +14,12 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import co.ke.technovation.constants.AppPropertyHolder;
+
 @Entity
 @Table(name="mpesa_raw",  indexes = {
 		@Index(columnList="msisdn", name="accodeidx")
-})
+}, schema=AppPropertyHolder.CMP_SCHEMA_NAME)
 public class MpesaRaw extends AbstractEntity {
 	
 	@Column(name="raw_confirmation_xml", length=6000)
@@ -37,7 +39,7 @@ public class MpesaRaw extends AbstractEntity {
 	@Column(name="callType", nullable=false)
 	private CallType callType;
 	
-	@Column(name="transAmount", scale=5, precision=2)
+	@Column(name="transAmount", scale=2, precision=5)
 	private BigDecimal transAmount;
 	
 	@PreUpdate
