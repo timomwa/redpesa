@@ -6,9 +6,10 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
-import co.ke.technovation.dao.MpesaRawDAOI;
+import co.ke.technovation.dao.MpesaInRawXMLDAOI;
 import co.ke.technovation.entity.CallType;
-import co.ke.technovation.entity.MpesaRaw;
+import co.ke.technovation.entity.MpesaInRawXML;
+import co.ke.technovation.entity.ProcessingStatus;
 
 @Stateless
 public class MpesaRawEJBImpl implements MpesaRawEJBI {
@@ -19,24 +20,32 @@ public class MpesaRawEJBImpl implements MpesaRawEJBI {
 	private XMLUtilsI xmlUtils;
 	
 	@Inject
-	private MpesaRawDAOI mpesarawDAO;
+	private MpesaInRawXMLDAOI mpesaInXMLDao;
 	
-	public void logRequest(String xml, CallType callType) throws Exception{
+	
+	@Override
+	public MpesaInRawXML save(MpesaInRawXML rawlog) throws Exception{
+		return mpesaInXMLDao.save(rawlog);
+	}
+	
+	@Override
+	public MpesaInRawXML logRequest(String xml, CallType callType) throws Exception{
+		
+		MpesaInRawXML rawlog = new MpesaInRawXML();
 		
 		try{
 			
-			MpesaRaw rawlog = new MpesaRaw();
 			rawlog.setRaw_confirmation_xml(xml);
-			rawlog.setMsisdn( xmlUtils.getValue(xml, "MSISDN") );
+			rawlog.setStatus(ProcessingStatus.JUST_IN.getCode());
 			rawlog.setTransId(  xmlUtils.getValue(xml, "TransID")  );
-			rawlog.setCallType(callType);
-			rawlog.setTransAmount( xmlUtils.toBigDecimal( xmlUtils.getValue(xml, "TransAmount") )  );
-			mpesarawDAO.save(rawlog);
+			rawlog = mpesaInXMLDao.save(rawlog);
 			
 		}catch(Exception e){
 			logger.error(e.getMessage(), e);
 			throw e;
 		}
+		
+		return rawlog;
 	}
 
 }

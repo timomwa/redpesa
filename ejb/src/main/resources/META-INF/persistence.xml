@@ -7,7 +7,8 @@
 	<persistence-unit name="redpesaJARPU" transaction-type="JTA">
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<jta-data-source>java:/redpesaDS</jta-data-source>
-		 <class>co.ke.technovation.entity.MpesaRaw</class>
+		 <class>co.ke.technovation.entity.MpesaRawXML</class>
+		 <class>co.ke.technovation.entity.MpesaIn</class>
 		 <class>co.ke.technovation.entity.Msisdn</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>

@@ -14,6 +14,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import co.ke.technovation.entity.MpesaIn;
 import co.ke.technovation.entity.RedCrossPayment;
 
 @Stateless
@@ -50,6 +51,41 @@ public class XMLUtilsImpl implements XMLUtilsI {
 		return BigDecimal.ZERO;
 	}
 
+	@Override
+	public MpesaIn populateValues(String xml, MpesaIn payment) throws Exception{
+		
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	    DocumentBuilder builder = factory.newDocumentBuilder();
+	    InputSource is = new InputSource(new StringReader(xml));
+	    Document doc = builder.parse(is);
+	    doc.getDocumentElement().normalize();
+	    
+	    NodeList nList = doc.getElementsByTagName("KYCInfo");
+	    for (int temp = 0; temp < nList.getLength(); temp++) {
+	    	Node nNode = nList.item(temp);
+	    	if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+				Element eElement = (Element) nNode;
+				
+				System.out.println("\nCurrent Element :" + nNode.getNodeName());
+				String key  = eElement.getElementsByTagName("KYCName").item(0).getTextContent();
+				String val  = eElement.getElementsByTagName("KYCValue").item(0).getTextContent();
+				
+				if(key.trim().equalsIgnoreCase(FIRST_NAME_KEY)){
+					payment.setFirst_name(val);
+				}else if(key.trim().equalsIgnoreCase(MIDDLE_NAME_KEY)){
+					payment.setMiddle_name(val);
+				}else if (key.trim().equalsIgnoreCase(LAST_NAME_KEY)){
+					payment.setLast_name(val);
+				}
+	    	}
+
+	    }
+	    
+
+    	
+    	return payment;
+	}
 
 	@Override
 	public RedCrossPayment populateValues(String xml, RedCrossPayment payment) throws Exception {

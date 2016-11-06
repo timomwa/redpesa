@@ -6,6 +6,6 @@ public interface RedCrossPaymentsEJBI {
 
 	public void mimicPayment();
 
-	public void savePayment(RedCrossPayment payment)  throws Exception;
+	public RedCrossPayment savePayment(RedCrossPayment payment)  throws Exception;
 
 }

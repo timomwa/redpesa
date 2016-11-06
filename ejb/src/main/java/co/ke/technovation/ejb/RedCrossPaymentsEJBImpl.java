@@ -18,8 +18,8 @@ public class RedCrossPaymentsEJBImpl implements RedCrossPaymentsEJBI {
 	
 	public Logger logger = Logger.getLogger(getClass());
 	
-	public void savePayment(RedCrossPayment payment) throws Exception{
-		paymentdDAO.save(payment);
+	public RedCrossPayment savePayment(RedCrossPayment payment) throws Exception{
+		return paymentdDAO.save(payment);
 	}
 	
 	public void mimicPayment(){
