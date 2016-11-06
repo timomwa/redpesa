@@ -2,8 +2,8 @@ package co.ke.technovation.ejb;
 
 import java.math.BigInteger;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
@@ -15,7 +15,7 @@ public class MsisdnListEJBImpl implements MsisdnListEJBI {
 	
 	private Logger logger = Logger.getLogger(getClass());
 	
-	@EJB
+	@Inject
 	private MsisdnListDAOI msisdnListDAO;
 	
 	@Override

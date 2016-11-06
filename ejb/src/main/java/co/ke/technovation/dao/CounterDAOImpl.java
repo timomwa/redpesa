@@ -59,7 +59,7 @@ public class CounterDAOImpl extends GenericDAOImpl<Counter, Long>  implements Co
 
 		try{
 			
-			Query query = em.createQuery("UPDATE Counter SET  counts = (counts + 1), timeStamp = current_date WHERE counter_name = :counter_name");
+			Query query = em.createQuery("UPDATE Counter SET  counts = (counts + 1), timeStamp = current_date WHERE name = :counter_name");
 			query.setParameter("counter_name", counter_name);
 			query.executeUpdate();
 			

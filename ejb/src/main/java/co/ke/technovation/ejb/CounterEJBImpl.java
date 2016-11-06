@@ -2,6 +2,7 @@ package co.ke.technovation.ejb;
 
 import javax.ejb.Remote;
 import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
@@ -9,8 +10,7 @@ import org.apache.log4j.Logger;
 import co.ke.technovation.dao.CounterDAOI;
 import co.ke.technovation.entity.Counter;
 
-@Singleton
-@Remote
+@Stateless
 public class CounterEJBImpl implements CounterEJBI {
 	
 	public Logger logger = Logger.getLogger(getClass());

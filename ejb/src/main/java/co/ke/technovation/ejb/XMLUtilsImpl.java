@@ -3,6 +3,7 @@ package co.ke.technovation.ejb;
 import java.io.StringReader;
 import java.math.BigDecimal;
 
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,6 +19,7 @@ import co.ke.technovation.entity.MpesaIn;
 import co.ke.technovation.entity.RedCrossPayment;
 
 @Stateless
+@Remote(XMLUtilsI.class)
 public class XMLUtilsImpl implements XMLUtilsI {
 	
 	private static final String FIRST_NAME_KEY = "[Personal Details][First Name]";

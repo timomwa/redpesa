@@ -43,13 +43,13 @@ public class MpesaIn extends AbstractEntity {
 	@Column(name="callType", nullable=false)
 	private CallType callType;
 	
-	@Column(name="transType", nullable=false)
+	@Column(name="transType", length=20, nullable=false)
 	private String transType;
 	
-	@Column(name="businessShortcode", nullable=false)
+	@Column(name="businessShortcode", length=10,  nullable=false)
 	private String businessShortcode;
 	
-	@Column(name="billRefNumber")
+	@Column(name="billRefNumber", length=100)
 	private String billRefNumber;
 	
 	@Column(name="transAmount", precision=10, scale=2, nullable=false)

@@ -18,6 +18,7 @@ public class MsisdnListDAOImpl  extends GenericDAOImpl<MsisdnList, Long>  implem
 		try{
 			
 			Query qry = em.createQuery("UPDATE MsisdnList SET playcount = (playcount + 1) WHERE msisdn = :msisdn");
+			qry.setParameter("msisdn", msisdn);
 			int updated = qry.executeUpdate();
 			success = ( updated>0 );
 			

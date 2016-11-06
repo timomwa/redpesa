@@ -15,7 +15,7 @@ import co.ke.technovation.constants.AppPropertyHolder;
 }, schema=AppPropertyHolder.CMP_SCHEMA_NAME)
 public class MsisdnList extends AbstractEntity {
 	
-	@Column(name="msisdn", unique=true, nullable=false)
+	@Column(name="msisdn", length=15, unique=true, nullable=false)
 	private String msisdn;
 	
 	@Column(name="playcount", nullable=false)

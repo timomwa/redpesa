@@ -26,7 +26,7 @@ public class Counter extends AbstractEntity {
 	 */
 	private static final long serialVersionUID = 3047076426889613355L;
 
-	@Column(name="name", length=10, nullable=false, unique=true)
+	@Column(name="name", length=20, nullable=false, unique=true)
 	private String name;
 	
 	@Column(name="counts", nullable=false)
