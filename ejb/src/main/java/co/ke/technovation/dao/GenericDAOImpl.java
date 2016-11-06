@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
@@ -209,6 +210,11 @@ public class GenericDAOImpl<T, ID extends Serializable> implements GenericDAOI<T
 
 		final List<T> result = (List<T>) query.getResultList();
 		return result;
+	}
+	
+	@Override
+	public void lock(T entity, LockModeType type){
+		em.lock(entity, type);
 	}
 
 }

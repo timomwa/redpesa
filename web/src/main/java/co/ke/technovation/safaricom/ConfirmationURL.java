@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.StringReader;
-import java.math.BigDecimal;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -14,15 +12,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
+import co.ke.technovation.ejb.CounterEJBI;
 import co.ke.technovation.ejb.MpesaInEJBI;
 import co.ke.technovation.ejb.MpesaRawEJBI;
+import co.ke.technovation.ejb.MsisdnListEJBI;
 import co.ke.technovation.ejb.RedCrossPaymentsEJBI;
 import co.ke.technovation.ejb.XMLUtilsI;
 import co.ke.technovation.entity.CallType;
@@ -43,9 +39,17 @@ public class ConfirmationURL extends HttpServlet {
 	@EJB
 	private MpesaInEJBI mpesaInEJB;
 	
-	
 	@EJB
 	private XMLUtilsI xmlUtils;
+	
+	@EJB
+	private CounterEJBI counterEJB;
+	
+	@EJB
+	private MsisdnListEJBI msisdnListEJB;
+	
+	
+	private final static String MPESA_INS_COUNTER = "MPESA_INFLOW";
 	
 	private Logger logger = Logger.getLogger(getClass());
 	private String response = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" "
@@ -68,6 +72,7 @@ public class ConfirmationURL extends HttpServlet {
 		PrintWriter pw = resp.getWriter();
 		
 		try{
+			
 			String xml = getBody(req);
 			
 			String transType = xmlUtils.getValue(xml, "TransType");
@@ -139,6 +144,11 @@ public class ConfirmationURL extends HttpServlet {
 			
 			resp.setContentType("text/xml");
 			String resp_const = response.replaceAll("\\$\\{TRANSACTION_ID\\}", transID);
+			
+			counterEJB.incrementCounter(MPESA_INS_COUNTER);
+			
+			msisdnListEJB.incrementCounter(msisdn);
+			
 			pw.println(resp_const);
 			
 		}catch(Exception e){

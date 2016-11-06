@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.LockModeType;
+
 public interface GenericDAOI<T, ID extends Serializable> {
 	
 	
@@ -127,5 +129,13 @@ public interface GenericDAOI<T, ID extends Serializable> {
      * @return the list of entities
      */
     List<T> findByNamedQueryAndNamedParams(final String queryName, final Map<String, ?extends Object> params);
+    
+    
+    /**
+     * 
+     * @param entity -  the entity to save
+     * @param type - javax.persistence.LockModeType
+     */
+    public void lock(T entity, LockModeType type);
 
 }
