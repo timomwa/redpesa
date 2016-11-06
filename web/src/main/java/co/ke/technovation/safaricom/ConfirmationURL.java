@@ -108,6 +108,7 @@ public class ConfirmationURL extends HttpServlet {
 			mpesaIn.setTransId(transID);
 			mpesaIn.setTransType(transType);
 			mpesaIn.setSourceip(ip_addr);
+			mpesaIn.setMsisdn(msisdn);
 			
 			mpesaIn = xmlUtils.populateValues(xml, mpesaIn);
 			
@@ -125,7 +126,7 @@ public class ConfirmationURL extends HttpServlet {
 			sb.append("\t\t Middle name :").append(mpesaIn.getMiddle_name() ).append("\n");
 			sb.append("\t\t Last name :").append(mpesaIn.getLast_name()).append("\n");
 			
-			logger.debug( "\n\n Extracted Values --> "+ sb.toString() +"\n\n");
+			logger.info( "\n\n Extracted Values --> "+ sb.toString() +"\n\n");
 			
 			mpesaIn = mpesaInEJB.saveMpesaInFlow(mpesaIn);
 			payment = paymentsEJBI.savePayment(payment);

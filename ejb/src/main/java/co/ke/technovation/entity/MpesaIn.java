@@ -52,10 +52,10 @@ public class MpesaIn extends AbstractEntity {
 	@Column(name="billRefNumber")
 	private String billRefNumber;
 	
-	@Column(name="transAmount", scale=2, precision=5, nullable=false)
+	@Column(name="transAmount", precision=10, scale=2, nullable=false)
 	private BigDecimal transAmount;
 	
-	@Column(name="orgAccountBalance", scale=2, precision=5, nullable=false)
+	@Column(name="orgAccountBalance", precision=10, scale=2, nullable=false)
 	private BigDecimal orgAccountBalance;
 	
 	@Column(name="status", nullable=false)

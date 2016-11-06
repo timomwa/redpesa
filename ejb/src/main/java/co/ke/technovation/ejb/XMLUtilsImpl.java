@@ -67,7 +67,6 @@ public class XMLUtilsImpl implements XMLUtilsI {
 
 				Element eElement = (Element) nNode;
 				
-				System.out.println("\nCurrent Element :" + nNode.getNodeName());
 				String key  = eElement.getElementsByTagName("KYCName").item(0).getTextContent();
 				String val  = eElement.getElementsByTagName("KYCValue").item(0).getTextContent();
 				
