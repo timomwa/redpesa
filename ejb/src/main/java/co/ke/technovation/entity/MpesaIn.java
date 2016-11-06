@@ -20,7 +20,7 @@ import co.ke.technovation.constants.AppPropertyHolder;
 @Table(name="mpesa_in",  indexes = {
 		@Index(columnList="msisdn", name="accodeidx"),
 		@Index(columnList="billRefNumber", name="billrefNumberIdx"),
-		@Index(columnList="bussinessShortcode", name="bizshortcodeIdx"),
+		@Index(columnList="businessShortcode", name="bizshortcodeIdx"),
 		@Index(columnList="transId", name="transIdIdx", unique=true),
 		@Index(columnList= "transId,timeStamp", name="UK_jmf0p32js61y0y9icngqkq6dr", unique=true)
 }, schema=AppPropertyHolder.CMP_SCHEMA_NAME)
