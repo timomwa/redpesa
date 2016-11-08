@@ -73,6 +73,10 @@ public class MpesaIn extends AbstractEntity {
 	@Column(name="sourceip", length=45, nullable=false)
 	private String sourceip;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="transTime", nullable=true)
+	private Date transTime;
+	
 	public String getMsisdn() {
 		return msisdn;
 	}
@@ -193,6 +197,14 @@ public class MpesaIn extends AbstractEntity {
 	public void setSourceip(String sourceip) {
 		this.sourceip = sourceip;
 	}
+	
+	public Date getTransTime() {
+		return transTime;
+	}
+
+	public void setTransTime(Date transTime) {
+		this.transTime = transTime;
+	}
 
 	@PreUpdate
 	@PrePersist
@@ -212,5 +224,24 @@ public class MpesaIn extends AbstractEntity {
 		
 		if(sourceip==null)
 			sourceip = AppPropertyHolder.DEF_SOURCE_IP;
+	}
+
+	public MpesaIn updateFromInstance(MpesaIn mpesaIn) {
+		this.setBillRefNumber( mpesaIn.getBillRefNumber() );
+		this.setBusinessShortcode( mpesaIn.getBusinessShortcode() );
+		this.setCallType( mpesaIn.getCallType() );
+		this.setFirst_name( mpesaIn.getFirst_name() );
+		this.setMiddle_name( mpesaIn.getMiddle_name() );
+		this.setMsisdn( mpesaIn.getMsisdn() );
+		this.setOrgAccountBalance( mpesaIn.getOrgAccountBalance() );
+		this.setRaw_xml_id( mpesaIn.getRaw_xml_id() );
+		this.setSourceip( mpesaIn.getSourceip() );
+		this.setStatus( mpesaIn.getStatus() );
+		this.setTimeStamp( mpesaIn.getTimeStamp() );
+		this.setTransAmount( mpesaIn.getTransAmount() );
+		this.setTransId( mpesaIn.getTransId() );
+		this.setTransTime( mpesaIn.getTransTime() );
+		this.setTransType( mpesaIn.getTransType() );
+		return this;
 	}
 }

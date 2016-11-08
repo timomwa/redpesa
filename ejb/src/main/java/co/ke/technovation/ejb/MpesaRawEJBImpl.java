@@ -1,5 +1,11 @@
 package co.ke.technovation.ejb;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -28,17 +34,36 @@ public class MpesaRawEJBImpl implements MpesaRawEJBI {
 		return mpesaInXMLDao.save(rawlog);
 	}
 	
+	DateFormat source_format = new SimpleDateFormat("yyyyMMddHHmmss");
+    DateFormat dest_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
+    @Override
+    public List<MpesaInRawXML> listUnprocessed(int limit){
+    	return mpesaInXMLDao.listUnprocessed(limit);
+    }
+    
+    
 	@Override
 	public MpesaInRawXML logRequest(String xml, CallType callType) throws Exception{
 		
-		MpesaInRawXML rawlog = new MpesaInRawXML();
+		MpesaInRawXML rawlog = null;
 		
 		try{
 			
-			rawlog.setRaw_confirmation_xml(xml);
-			rawlog.setStatus(ProcessingStatus.JUST_IN.getCode());
-			rawlog.setTransId(  xmlUtils.getValue(xml, "TransID")  );
-			rawlog = mpesaInXMLDao.save(rawlog);
+			String transTime = xmlUtils.getValue(xml, "TransTime");
+			Date transactionTime = source_format.parse(transTime);
+			
+			String transId = xmlUtils.getValue(xml, "TransID");
+			rawlog = mpesaInXMLDao.findBy("transId", transId);
+			
+			if(rawlog==null){
+				rawlog = new MpesaInRawXML();
+				rawlog.setRaw_confirmation_xml(xml);
+				rawlog.setStatus(ProcessingStatus.JUST_IN.getCode());
+				rawlog.setTransId(  transId  );
+				rawlog.setTransTime(transactionTime);
+				rawlog = mpesaInXMLDao.save(rawlog);
+			}
 			
 		}catch(Exception e){
 			logger.error(e.getMessage(), e);

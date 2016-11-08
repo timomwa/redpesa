@@ -16,8 +16,23 @@ public class MpesaInEJBImpl implements MpesaInEJBI {
 	
 	public Logger logger = Logger.getLogger(getClass());
 	
+	@Override
 	public MpesaIn saveMpesaInFlow(MpesaIn mpesaIn) throws Exception{
-		return mpesaInDao.save(mpesaIn);
+		
+		MpesaIn originalRec = findByTransactionId(mpesaIn.getTransId());
+		
+		if(originalRec==null)
+			return mpesaInDao.save(mpesaIn);
+		
+		originalRec.updateFromInstance(mpesaIn);
+		
+		return mpesaInDao.save(originalRec);
+	}
+	
+	
+	@Override
+	public MpesaIn findByTransactionId(String transId) throws Exception{
+		return mpesaInDao.findBy("transId", transId);
 	}
 
 }

@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 
 import co.ke.technovation.dao.RedCrossPaymentsDAOI;
+import co.ke.technovation.entity.MpesaIn;
 import co.ke.technovation.entity.RedCrossPayment;
 
 @Stateless
@@ -18,7 +19,20 @@ public class RedCrossPaymentsEJBImpl implements RedCrossPaymentsEJBI {
 	
 	public Logger logger = Logger.getLogger(getClass());
 	
+	@Override
 	public RedCrossPayment savePayment(RedCrossPayment payment) throws Exception{
+		return paymentdDAO.save(payment);
+	}
+	
+	@Override
+	public RedCrossPayment savePayment(MpesaIn mpesaIn) throws Exception{
+		RedCrossPayment payment = new RedCrossPayment();
+		payment.setAmount(  mpesaIn.getTransAmount() );
+		payment.setIs_processed(Boolean.FALSE);
+		payment.setPhone_number( mpesaIn.getMsisdn() );
+		payment.setTelco_transaction_id( mpesaIn.getTransId() );
+		payment.setFirst_name( mpesaIn.getFirst_name() );
+		payment.setLast_name( mpesaIn.getLast_name() );
 		return paymentdDAO.save(payment);
 	}
 	

@@ -31,6 +31,11 @@ public class MpesaInRawXML extends AbstractEntity {
 	
 	@Column(name="status", nullable=false)
 	private Integer status;
+	
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="transTime", nullable=true)
+	private Date transTime;
 
 	public String getRaw_confirmation_xml() {
 		return raw_confirmation_xml;
@@ -64,7 +69,13 @@ public class MpesaInRawXML extends AbstractEntity {
 		this.transId = transId;
 	}
 	
-	
+	public Date getTransTime() {
+		return transTime;
+	}
+
+	public void setTransTime(Date transTime) {
+		this.transTime = transTime;
+	}
 
 	@PreUpdate
 	@PrePersist

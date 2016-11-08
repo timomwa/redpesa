@@ -34,7 +34,7 @@ public class ConfirmationURL extends HttpServlet {
 	private MpesaRawEJBI mpesaRawEJB;
 	
 	@EJB
-	private RedCrossPaymentsEJBI paymentsEJBI;
+	private RedCrossPaymentsEJBI redcrossPaymentsEJB;
 	
 	@EJB
 	private MpesaInEJBI mpesaInEJB;
@@ -72,82 +72,45 @@ public class ConfirmationURL extends HttpServlet {
 		PrintWriter pw = resp.getWriter();
 		
 		try{
-			
+			String resp_const  = "";
 			String xml = getBody(req);
 			
-			String transType = xmlUtils.getValue(xml, "TransType");
-			String transID = xmlUtils.getValue(xml, "TransID");
-			String transTime = xmlUtils.getValue(xml, "TransTime");
-			String transAmount = xmlUtils.getValue(xml, "TransAmount");
-			String businessShortCode = xmlUtils.getValue(xml, "BusinessShortCode");
-			String billRefNumber = xmlUtils.getValue(xml, "BillRefNumber");
-			String orgAccountBalance = xmlUtils.getValue(xml, "OrgAccountBalance");
-			String msisdn = xmlUtils.getValue(xml, "MSISDN");
-			String ip_addr = req.getRemoteAddr();
+			logger.info("\n-----xml -- > "+xml);
 			
-			
-			StringBuffer sb = new StringBuffer();
-			
-			sb.append("\t\t TransType :").append(transType).append("\n");
-			sb.append("\t\t TransType :").append(transType).append("\n");
-			sb.append("\t\t TransID :").append(transID).append("\n");
-			sb.append("\t\t TransTime :").append(transTime).append("\n");
-			sb.append("\t\t TransAmount :").append(transAmount).append("\n");
-			sb.append("\t\t BusinessShortCode :").append(businessShortCode).append("\n");
-			sb.append("\t\t BillRefNumber :").append(billRefNumber).append("\n");
-			sb.append("\t\t InvoiceNumber :").append(orgAccountBalance).append("\n");
-			sb.append("\t\t MSISDN :").append(msisdn).append("\n");
-			
-			
-			MpesaInRawXML mpesa_raw_xml = mpesaRawEJB.logRequest(xml, CallType.CONFIRMATION);
-			
-			
-			MpesaIn mpesaIn = new MpesaIn();
-			mpesaIn.setBillRefNumber(billRefNumber);
-			mpesaIn.setBusinessShortcode(businessShortCode);
-			mpesaIn.setCallType(CallType.CONFIRMATION);
-			mpesaIn.setOrgAccountBalance( xmlUtils.toBigDecimal( orgAccountBalance ) );
-			mpesaIn.setRaw_xml_id(mpesa_raw_xml.getId());
-			mpesaIn.setStatus(ProcessingStatus.JUST_IN.getCode());
-			mpesaIn.setTransAmount( xmlUtils.toBigDecimal( transAmount) );
-			mpesaIn.setTransId(transID);
-			mpesaIn.setTransType(transType);
-			mpesaIn.setSourceip(ip_addr);
-			mpesaIn.setMsisdn(msisdn);
-			
-			mpesaIn = xmlUtils.populateValues(xml, mpesaIn);
-			
-			RedCrossPayment payment = new RedCrossPayment();
-			payment.setAmount(  xmlUtils.toBigDecimal( transAmount ) );
-			payment.setIs_processed(Boolean.FALSE);
-			payment.setPhone_number(msisdn);
-			payment.setTelco_transaction_id(transID);
-			payment.setFirst_name(mpesaIn.getFirst_name());
-			payment.setLast_name(mpesaIn.getLast_name());
-			
-			
-
-			sb.append("\t\t First name :").append(mpesaIn.getFirst_name()).append("\n");
-			sb.append("\t\t Middle name :").append(mpesaIn.getMiddle_name() ).append("\n");
-			sb.append("\t\t Last name :").append(mpesaIn.getLast_name()).append("\n");
-			
-			logger.info( "\n\n Extracted Values --> "+ sb.toString() +"\n\n");
-			
-			mpesaIn = mpesaInEJB.saveMpesaInFlow(mpesaIn);
-			payment = paymentsEJBI.savePayment(payment);
-			
-			mpesa_raw_xml.setStatus(ProcessingStatus.PROCESSED_SUCCESSFULLY.getCode());
-			mpesaIn.setStatus(ProcessingStatus.PROCESSED_SUCCESSFULLY.getCode());
-			
-			mpesa_raw_xml = mpesaRawEJB.save(mpesa_raw_xml);
-			mpesaIn = mpesaInEJB.saveMpesaInFlow(mpesaIn);
+			if(xml!=null && !xml.trim().isEmpty()){
+				
+				String ip_addr = req.getRemoteAddr();
+				
+				MpesaInRawXML mpesa_raw_xml = mpesaRawEJB.logRequest(xml, CallType.CONFIRMATION);
+				
+				MpesaIn mpesaIn = xmlUtils.parseXML(xml, CallType.CONFIRMATION);
+				
+				mpesaIn.setSourceip( ip_addr );
+				mpesaIn.setRaw_xml_id( mpesa_raw_xml.getId() );
+				
+				redcrossPaymentsEJB.savePayment( mpesaIn );
+				
+				mpesaIn = mpesaInEJB.saveMpesaInFlow(mpesaIn);
+				
+				mpesa_raw_xml.setStatus(ProcessingStatus.PROCESSED_SUCCESSFULLY.getCode());
+				mpesaIn.setStatus(ProcessingStatus.PROCESSED_SUCCESSFULLY.getCode());
+				
+				mpesa_raw_xml = mpesaRawEJB.save(mpesa_raw_xml);
+				mpesaIn = mpesaInEJB.saveMpesaInFlow(mpesaIn);
+				
+				resp_const = response.replaceAll("\\$\\{TRANSACTION_ID\\}", mpesaIn.getTransId());
+				
+				counterEJB.incrementCounter(MPESA_INS_COUNTER);
+				
+				msisdnListEJB.incrementCounter( mpesaIn.getMsisdn() );
+				
+			}else{
+				
+				resp_const = response.replaceAll("\\$\\{TRANSACTION_ID\\}", "0");
+				
+			}
 			
 			resp.setContentType("text/xml");
-			String resp_const = response.replaceAll("\\$\\{TRANSACTION_ID\\}", transID);
-			
-			counterEJB.incrementCounter(MPESA_INS_COUNTER);
-			
-			msisdnListEJB.incrementCounter(msisdn);
 			
 			pw.println(resp_const);
 			

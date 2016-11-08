@@ -86,12 +86,14 @@ public class ValidationEndpoint extends HttpServlet {
 			
 			resp.setContentType("text/xml");
 			
+			if(TransID==null || TransID.trim().isEmpty())
+				TransID = "111";
 			String resp_const = response.replaceAll("\\$\\{TRANSACTION_ID\\}", TransID);
 			
 			logger.info( "\n\n Extracted --> "+ resp_const +"\n\n");
 			
-			if(xmlUtils.toBigDecimal(TransAmount).compareTo(MIN_AMOUNT)<0)
-				throw new Exception("Amount is less than Kes. 50. Payment rejected.");
+			//if(xmlUtils.toBigDecimal(TransAmount).compareTo(MIN_AMOUNT)<0)
+			//	throw new Exception("Amount is less than Kes. 50. Payment rejected.");
 		
 			pw.println(resp_const);
 			
