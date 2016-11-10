@@ -11,4 +11,6 @@ public interface RedCrossPaymentsEJBI {
 
 	public RedCrossPayment savePayment(MpesaIn mpesaIn) throws Exception;
 
+	public boolean redcrossPaymentExists(String transId);
+
 }

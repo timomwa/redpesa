@@ -75,7 +75,7 @@ public class ConfirmationURL extends HttpServlet {
 			String resp_const  = "";
 			String xml = getBody(req);
 			
-			logger.info("\n-----xml -- > "+xml);
+			//logger.info("\n-----xml -- > "+xml);
 			
 			if(xml!=null && !xml.trim().isEmpty()){
 				

@@ -41,7 +41,7 @@ public class ReprocessorEJBImpl implements ReprocessorEJBI {
 		
 		int processed_total = 0;
 		
-		List<MpesaInRawXML> mpesaRawlist = mpesaRawEJB.listUnprocessed(100);
+		List<MpesaInRawXML> mpesaRawlist = mpesaRawEJB.listUnprocessed(10);
 		
 		for(MpesaInRawXML rawXML : mpesaRawlist){
 			
@@ -58,7 +58,11 @@ public class ReprocessorEJBImpl implements ReprocessorEJBI {
 				mpesaIn.setRaw_xml_id( rawXML.getId() );
 				mpesaIn.setSourceip( ip_addr );
 				
-				redcrossPaymentsEJB.savePayment( mpesaIn );
+				boolean paymentexit = redcrossPaymentsEJB.redcrossPaymentExists( mpesaIn.getTransId() );
+				
+				if(!paymentexit)
+					redcrossPaymentsEJB.savePayment( mpesaIn );
+				
 				mpesaIn = mpesaInEJB.saveMpesaInFlow(mpesaIn);
 				
 				rawXML.setStatus(ProcessingStatus.PROCESSED_SUCCESSFULLY.getCode());

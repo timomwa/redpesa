@@ -92,7 +92,7 @@ public class XMLUtilsImpl implements XMLUtilsI {
 		mpesaIn.setSourceip( null );//To be set elsewhere
 		mpesaIn.setMsisdn(msisdn);
 		mpesaIn.setTransTime( transactionTime );
-		
+		mpesaIn.setTimeStamp( new Date() );
 		try {
 			mpesaIn = populateValues(xml, mpesaIn);
 		} catch (Exception e) {

@@ -15,14 +15,22 @@ import co.ke.technovation.entity.RedCrossPayment;
 public class RedCrossPaymentsEJBImpl implements RedCrossPaymentsEJBI {
 	
 	@Inject
-	private RedCrossPaymentsDAOI paymentdDAO;
+	private RedCrossPaymentsDAOI redcrossPaymentDAO;
 	
 	public Logger logger = Logger.getLogger(getClass());
 	
 	@Override
 	public RedCrossPayment savePayment(RedCrossPayment payment) throws Exception{
-		return paymentdDAO.save(payment);
+		return redcrossPaymentDAO.save(payment);
 	}
+	
+	
+	@Override
+	public boolean redcrossPaymentExists(String transId){
+		RedCrossPayment payment = redcrossPaymentDAO.getPaymentByTransId(transId);
+		return payment!=null;
+	}
+	
 	
 	@Override
 	public RedCrossPayment savePayment(MpesaIn mpesaIn) throws Exception{
@@ -33,7 +41,11 @@ public class RedCrossPaymentsEJBImpl implements RedCrossPaymentsEJBI {
 		payment.setTelco_transaction_id( mpesaIn.getTransId() );
 		payment.setFirst_name( mpesaIn.getFirst_name() );
 		payment.setLast_name( mpesaIn.getLast_name() );
-		return paymentdDAO.save(payment);
+		payment.setAccount_number( mpesaIn.getBillRefNumber() );
+		payment.setDate_paid( mpesaIn.getTransTime() );
+		payment.setDate_received( mpesaIn.getTimeStamp() );
+		payment.setTelco_name("Safaricom");
+		return redcrossPaymentDAO.save(payment);
 	}
 	
 	public void mimicPayment(){
@@ -45,7 +57,7 @@ public class RedCrossPaymentsEJBImpl implements RedCrossPaymentsEJBI {
 		payment.setPhone_number("0720988636");
 		payment.setTelco_transaction_id("KMXSERE");
 		try {
-			paymentdDAO.save(payment);
+			redcrossPaymentDAO.save(payment);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
