@@ -7,7 +7,11 @@ allprojects {
 	
 	archivesBaseName = gradle.theName
 	group = gradle.theGroup
-	
+	version = gradle.theVersion
+	jar {
+		baseName = 'gradle.theName'
+		version = 'gradle.theVersion'
+	}
 	repositories {
 	    mavenCentral()	
 	    maven {
@@ -53,6 +57,7 @@ allprojects {
 
 apply plugin: 'ear'
 apply plugin: 'war'
+apply plugin: 'maven'
 
 archivesBaseName = gradle.theName
 group = gradle.theGroup
@@ -83,7 +88,6 @@ dependencies {
 	//earlib group: 'org.omnifaces', name: 'omnifaces', version: '2.5.1'
 	//earlib group: 'javax.el', name: 'javax.el-api', version: '3.0.0'
 	//earlib group: 'org.webjars', name: 'font-awesome', version: '4.6.3'
-	
 	deploy project(':ejb')
     deploy project(path:':web', configuration:'archives')
 }

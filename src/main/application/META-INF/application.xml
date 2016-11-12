@@ -4,16 +4,16 @@
   <display-name>redpesa</display-name>
   <initialize-in-order>false</initialize-in-order>
   <module>
-    <java>redpesa.jar</java>
+    <java>redpesa-1.0.jar</java>
   </module>
   <module>
     <web>
-      <web-uri>redpesa.war</web-uri>
+      <web-uri>redpesa-1.0.war</web-uri>
       <context-root>/redpesa</context-root>
     </web>
   </module>
   <module>
-    <ejb>redpesa.jar</ejb>
+    <ejb>redpesa-1.0.jar</ejb>
   </module>
   <library-directory>APP-INF/lib</library-directory> 
 </application>
