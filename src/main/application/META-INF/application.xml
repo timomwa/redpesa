@@ -9,7 +9,7 @@
   <module>
     <web>
       <web-uri>redpesa-1.0.war</web-uri>
-      <context-root>/redpesa</context-root>
+      <context-root>/bluemoon</context-root>
     </web>
   </module>
   <module>
