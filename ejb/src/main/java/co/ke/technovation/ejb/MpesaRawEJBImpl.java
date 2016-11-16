@@ -2,7 +2,6 @@ package co.ke.technovation.ejb;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,19 +49,24 @@ public class MpesaRawEJBImpl implements MpesaRawEJBI {
 		
 		try{
 			
-			String transTime = xmlUtils.getValue(xml, "TransTime");
-			Date transactionTime = source_format.parse(transTime);
-			
 			String transId = xmlUtils.getValue(xml, "TransID");
-			rawlog = mpesaInXMLDao.findBy("transId", transId);
 			
-			if(rawlog==null){
-				rawlog = new MpesaInRawXML();
-				rawlog.setRaw_confirmation_xml(xml);
-				rawlog.setStatus(ProcessingStatus.JUST_IN.getCode());
-				rawlog.setTransId(  transId  );
-				rawlog.setTransTime(transactionTime);
-				rawlog = mpesaInXMLDao.save(rawlog);
+			if(transId!=null && !transId.trim().isEmpty()){
+				
+				String transTime = xmlUtils.getValue(xml, "TransTime");
+				Date transactionTime = ( transTime!=null && !transTime.trim().isEmpty() ) ? source_format.parse(transTime) : null;
+				
+				rawlog = mpesaInXMLDao.findBy("transId", transId);
+				
+				if(rawlog==null){
+					rawlog = new MpesaInRawXML();
+					rawlog.setRaw_confirmation_xml(xml);
+					rawlog.setStatus(ProcessingStatus.JUST_IN.getCode());
+					rawlog.setTransId(  transId  );
+					rawlog.setTransTime(transactionTime);
+					rawlog = mpesaInXMLDao.save(rawlog);
+				}
+				
 			}
 			
 		}catch(Exception e){
