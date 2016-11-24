@@ -4,7 +4,7 @@ import java.util.List;
 
 import co.ke.technovation.entity.MpesaInRawXML;
 
-public interface MpesaInRawXMLDAOI   extends GenericDAOI<MpesaInRawXML, Long> {
+public interface MpesaInRawXMLDAOI extends GenericDAOI<MpesaInRawXML, Long> {
 
 	public List<MpesaInRawXML> listUnprocessed(int limit);
 

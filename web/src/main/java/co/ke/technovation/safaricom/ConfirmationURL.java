@@ -30,6 +30,11 @@ import co.ke.technovation.entity.RedCrossPayment;
 @WebServlet("/mpesa/confirmation")
 public class ConfirmationURL extends HttpServlet {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2658690632746762802L;
+
 	@EJB
 	private MpesaRawEJBI mpesaRawEJB;
 	

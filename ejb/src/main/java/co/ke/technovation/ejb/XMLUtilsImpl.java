@@ -9,6 +9,8 @@ import java.util.Date;
 
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -21,17 +23,18 @@ import org.xml.sax.InputSource;
 
 import co.ke.technovation.entity.CallType;
 import co.ke.technovation.entity.MpesaIn;
+import co.ke.technovation.entity.MpesaOut;
 import co.ke.technovation.entity.ProcessingStatus;
 import co.ke.technovation.entity.RedCrossPayment;
+import co.ke.technovation.xmlutils.Envelope;
 
 @Stateless
 @Remote(XMLUtilsI.class)
 public class XMLUtilsImpl implements XMLUtilsI {
 	
-	private static final String FIRST_NAME_KEY = "[Personal Details][First Name]";
-	private static final String MIDDLE_NAME_KEY = "[Personal Details][Middle Name]";
-	private static final String LAST_NAME_KEY = "[Personal Details][Last Name]";
+	
 	private DateFormat source_format = new SimpleDateFormat("yyyyMMddHHmmss");
+	private DateFormat source_format2 = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	
 	private Logger logger = Logger.getLogger(getClass());
 	
@@ -50,6 +53,7 @@ public class XMLUtilsImpl implements XMLUtilsI {
 	}
 	
 	
+	@Override
 	public BigDecimal toBigDecimal(String value){
 		if(value!=null && !value.trim().isEmpty())
 		try{
@@ -59,7 +63,105 @@ public class XMLUtilsImpl implements XMLUtilsI {
 		}
 		return BigDecimal.ZERO;
 	}
+	
+	@Override
+	public Integer toInteger(String value){
+		if(value!=null && !value.trim().isEmpty())
+		try{
+			return new Integer(value);
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+		}
+		return Integer.valueOf(0);
+	}
 
+
+	@Override
+	public MpesaOut parseB2CQueryTimeout(String xmlc, String ip_addr) throws Exception{
+		
+		MpesaOut mpesaOut = null;
+		
+		try{
+			
+			mpesaOut = new MpesaOut();
+			
+			JAXBContext jc = JAXBContext.newInstance(Envelope.class);
+		    Unmarshaller unmarshaller = jc.createUnmarshaller();
+		    Envelope envelope = (Envelope)  unmarshaller.unmarshal( new StringReader(xmlc) );
+	        String cdata_xml = envelope.getBody().getResultMsg().getValue();
+	        
+	        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		    DocumentBuilder builder = factory.newDocumentBuilder();
+		    InputSource is = new InputSource(new StringReader(cdata_xml));
+		    Document doc = builder.parse(is);
+		    doc.getDocumentElement().normalize();
+		    
+		    String resultType = doc.getElementsByTagName("ResultType").item(0).getTextContent();
+		    String resultCode = doc.getElementsByTagName("ResultCode").item(0).getTextContent();
+		    String resultDesc = doc.getElementsByTagName("ResultDesc").item(0).getTextContent();
+		    String originatorConversationID = doc.getElementsByTagName("OriginatorConversationID").item(0).getTextContent();
+		    String conversationID = doc.getElementsByTagName("ConversationID").item(0).getTextContent();
+		    String TransactionID = doc.getElementsByTagName("TransactionID").item(0).getTextContent();
+		    
+		    mpesaOut.setResultType( toInteger(resultType ) );
+		    mpesaOut.setResultCode( toInteger(resultCode ) );
+		    mpesaOut.setResultDesc( resultDesc );
+		    mpesaOut.setOriginatorConversationID(originatorConversationID);
+		    mpesaOut.setConversationID(conversationID);
+		    mpesaOut.setTransId(TransactionID);
+		   			   
+		    NodeList nList = doc.getElementsByTagName(B2C_RESULTPARAMETER);
+		    
+		    for (int temp = 0; temp < nList.getLength(); temp++) {
+		    	
+		    	Node nNode = nList.item(temp);
+		    	
+		    	if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+		    		Element eElement = (Element) nNode;
+					
+					String key  = eElement.getElementsByTagName("Key").item(0).getTextContent().trim();
+					String val  = eElement.getElementsByTagName("Value").item(0).getTextContent().trim();
+					
+					if(key.equals(B2C_TRANSACTIONRECEIPT)){
+						mpesaOut.setTransactionReceipt(val);
+					}
+					if(key.equals(B2C_TRANSACTIONAMOUNT)){
+						mpesaOut.setTransactionAmount( toBigDecimal(val) );
+					}
+					if(key.equals(B2C_CHARGES_PAID_ACCOUNT_AVAILABLE_FUNDS)){
+						mpesaOut.setB2CChargesPaidAccountAvailableFunds( toBigDecimal(val) );
+					}
+					if(key.equals(B2C_RECIPIENT_IS_REGISTERED_CUSTOMER)){
+						mpesaOut.setB2CRecipientIsRegisteredCustomer( val.equalsIgnoreCase("Y") );
+					}
+					if(key.equals(B2C_TRANSACTION_COMPLETED_DATE_TIME)){
+						Date transactionCompletedDateTime = null;
+						try {
+							transactionCompletedDateTime = source_format2.parse( val );
+							mpesaOut.setTransactionCompletedDateTime( transactionCompletedDateTime );
+						} catch (ParseException e) {
+							logger.error(e.getMessage());
+						}
+					}
+					if(key.equals(B2C_RECEIVER_PARTY_PUBLIC_NAME)){
+						mpesaOut.setReceiverPartyPublicName( val );
+					}
+					if(key.equals(B2C_WORKING_ACCOUNT_AVAILABLE_FUNDS)){
+						mpesaOut.setB2CWorkingAccountAvailableFunds( toBigDecimal( val ) );
+					}
+					if(key.equals(B2C_UTILITY_ACCOUNT_AVAILABLE_FUNDS)){
+						mpesaOut.setB2CUtilityAccountAvailableFunds( toBigDecimal( val ) );
+					}
+		    	}
+		    }
+	    
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+			throw e;
+		}
+	    
+		return mpesaOut;
+	}
 	
 	@Override
 	public MpesaIn parseXML(String xml, CallType callType){ 

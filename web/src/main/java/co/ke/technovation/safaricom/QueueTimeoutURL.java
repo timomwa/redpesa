@@ -17,6 +17,12 @@ import org.apache.log4j.Logger;
 @WebServlet("/mpesa/b2c/queuetimeout")
 public class QueueTimeoutURL extends HttpServlet  {
 	
+	
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6799840305066155862L;
 	private Logger logger = Logger.getLogger(getClass());
 	
 	@Override
