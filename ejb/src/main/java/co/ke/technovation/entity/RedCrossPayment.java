@@ -26,9 +26,10 @@ import co.ke.technovation.constants.AppPropertyHolder;
 public class RedCrossPayment implements Serializable {
 	
 	@Id
-	@Column(name = "id", nullable = false)
-	@SequenceGenerator(name = "mobile_money_seq", sequenceName = "mobile_money_seq")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "mobile_money_seq")
+	//@Column(name = "id", nullable = false)
+	//@SequenceGenerator(name = "mobile_money_seq", sequenceName = "mobile_money_seq")
+	//@GeneratedValue(strategy = GenerationType.AUTO, generator = "mobile_money_seq")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	
