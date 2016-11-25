@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import co.ke.technovation.ejb.CounterEJBI;
 import co.ke.technovation.ejb.MpesaOutEJBI;
 import co.ke.technovation.ejb.MpesaOutRawXMLEJBI;
+import co.ke.technovation.ejb.RedCrossWinnerEJBI;
 import co.ke.technovation.ejb.XMLUtilsI;
 import co.ke.technovation.entity.MpesaOut;
 import co.ke.technovation.entity.MpesaOutRawXML;
@@ -28,6 +29,9 @@ public class ResultURL extends HttpServlet {
 	
 	@EJB
 	private MpesaOutRawXMLEJBI mpesaOutRawXMLEJB;
+	
+	@EJB
+	private RedCrossWinnerEJBI redcrossWinnerEJB;
 	
 	@EJB
 	private MpesaOutEJBI mpesaOutEJB;
@@ -93,6 +97,8 @@ private Logger logger = Logger.getLogger(getClass());
 				mpesaOut = mpesaOutEJB.save(mpesaOut);
 				
 				conversationid = mpesaOut.getConversationID();
+				
+				redcrossWinnerEJB.updatePaymentStatus(mpesaOut);
 				
 			}
 			
