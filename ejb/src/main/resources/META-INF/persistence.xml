@@ -28,6 +28,7 @@
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<jta-data-source>java:/redcrossDS</jta-data-source>
 		 <class>co.ke.technovation.entity.RedCrossPayment</class>
+		 <class>co.ke.technovation.entity.RedCrossWinner</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.hbm2ddl.auto" value="validate" />
