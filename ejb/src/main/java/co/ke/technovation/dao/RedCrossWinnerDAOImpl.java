@@ -21,6 +21,23 @@ public class RedCrossWinnerDAOImpl extends GenericDAOImpl<RedCrossWinner, Long> 
 	protected EntityManager redcrossem;
 	
 	@Override
+	public RedCrossWinner findBy(String fieldName, Object value) {
+		
+		RedCrossWinner winner = null;
+		
+		try{
+			Query qry = redcrossem.createQuery("from RedCrossWinner WHERE "+fieldName+" = :"+fieldName);
+			qry.setParameter("fieldName", value);
+			qry.setMaxResults(1);
+			winner = (RedCrossWinner) qry.getSingleResult();
+		}catch(Exception e){
+			logger.error(e.getMessage(), e);
+		}
+		
+		return winner;
+	}
+	
+	@Override
 	public RedCrossWinner save(RedCrossWinner entity) throws Exception {
 		return redcrossem.merge(entity);
 	}	
