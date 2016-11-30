@@ -94,7 +94,7 @@ public class ValidationEndpoint extends HttpServlet {
 			
 			//if(xmlUtils.toBigDecimal(TransAmount).compareTo(MIN_AMOUNT)<0)
 			//	throw new Exception("Amount is less than Kes. 50. Payment rejected.");
-		
+			resp.setContentType("text/xml");
 			pw.println(resp_const);
 			
 		}catch(Exception e){
