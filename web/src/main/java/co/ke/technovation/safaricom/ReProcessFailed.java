@@ -38,8 +38,27 @@ public class ReProcessFailed extends HttpServlet {
 		
 		try{
 			
+			int limit = 100;
+			String action = "all";
+			if(req.getParameter("limit")!=null && !req.getParameter("limit").isEmpty())
+				try{
+					limit = Integer.valueOf( req.getParameter("limit") );
+				}catch(NumberFormatException e){}
+			
+			if(req.getParameter("action")!=null && !req.getParameter("action").isEmpty()){
+				action = req.getParameter("action");
+			}
 			String ip_addr = req.getRemoteAddr();
-			int processed = reprocessorEJB.process(ip_addr);
+			int processed = 0;
+			
+			if(action.equalsIgnoreCase("b2c")){
+				processed = reprocessorEJB.processB2C(ip_addr, limit);
+			}else if(action.equalsIgnoreCase("c2b")){
+				processed = reprocessorEJB.processC2B(ip_addr, limit);
+			}else{
+				processed = reprocessorEJB.process(ip_addr, limit);
+			}
+			
 			pw.println("<processed>"+processed+"</processed>");
 			
 		}catch(Exception e){

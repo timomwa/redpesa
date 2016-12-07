@@ -27,7 +27,7 @@ public class RedCrossWinnerDAOImpl extends GenericDAOImpl<RedCrossWinner, Long> 
 		
 		try{
 			Query qry = redcrossem.createQuery("from RedCrossWinner WHERE "+fieldName+" = :"+fieldName);
-			qry.setParameter("fieldName", value);
+			qry.setParameter(fieldName, value);
 			qry.setMaxResults(1);
 			winner = (RedCrossWinner) qry.getSingleResult();
 		}catch(Exception e){

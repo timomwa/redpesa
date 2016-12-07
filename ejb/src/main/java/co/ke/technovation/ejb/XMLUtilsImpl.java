@@ -109,50 +109,55 @@ public class XMLUtilsImpl implements XMLUtilsI {
 		    mpesaOut.setOriginatorConversationID(originatorConversationID);
 		    mpesaOut.setConversationID(conversationID);
 		    mpesaOut.setTransId(TransactionID);
-		   			   
+		    mpesaOut.setTransactionReceipt(TransactionID);	//Most cases, these are the same values. The value is canged in case it's a success
+		    
 		    NodeList nList = doc.getElementsByTagName(B2C_RESULTPARAMETER);
 		    
-		    for (int temp = 0; temp < nList.getLength(); temp++) {
+		    if(mpesaOut.getResultCode()==0){
 		    	
-		    	Node nNode = nList.item(temp);
-		    	
-		    	if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-		    		Element eElement = (Element) nNode;
-					
-					String key  = eElement.getElementsByTagName("Key").item(0).getTextContent().trim();
-					String val  = eElement.getElementsByTagName("Value").item(0).getTextContent().trim();
-					
-					if(key.equals(B2C_TRANSACTIONRECEIPT)){
-						mpesaOut.setTransactionReceipt(val);
-					}
-					if(key.equals(B2C_TRANSACTIONAMOUNT)){
-						mpesaOut.setTransactionAmount( toBigDecimal(val) );
-					}
-					if(key.equals(B2C_CHARGES_PAID_ACCOUNT_AVAILABLE_FUNDS)){
-						mpesaOut.setB2CChargesPaidAccountAvailableFunds( toBigDecimal(val) );
-					}
-					if(key.equals(B2C_RECIPIENT_IS_REGISTERED_CUSTOMER)){
-						mpesaOut.setB2CRecipientIsRegisteredCustomer( val.equalsIgnoreCase("Y") );
-					}
-					if(key.equals(B2C_TRANSACTION_COMPLETED_DATE_TIME)){
-						Date transactionCompletedDateTime = null;
-						try {
-							transactionCompletedDateTime = source_format2.parse( val );
-							mpesaOut.setTransactionCompletedDateTime( transactionCompletedDateTime );
-						} catch (ParseException e) {
-							logger.error(e.getMessage());
+			    for (int temp = 0; temp < nList.getLength(); temp++) {
+			    	
+			    	Node nNode = nList.item(temp);
+			    	
+			    	if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+			    		Element eElement = (Element) nNode;
+						
+						String key  = eElement.getElementsByTagName("Key").item(0).getTextContent().trim();
+						String val  = eElement.getElementsByTagName("Value").item(0).getTextContent().trim();
+						
+						if(key.equals(B2C_TRANSACTIONRECEIPT)){
+							mpesaOut.setTransactionReceipt(val);
 						}
-					}
-					if(key.equals(B2C_RECEIVER_PARTY_PUBLIC_NAME)){
-						mpesaOut.setReceiverPartyPublicName( val );
-					}
-					if(key.equals(B2C_WORKING_ACCOUNT_AVAILABLE_FUNDS)){
-						mpesaOut.setB2CWorkingAccountAvailableFunds( toBigDecimal( val ) );
-					}
-					if(key.equals(B2C_UTILITY_ACCOUNT_AVAILABLE_FUNDS)){
-						mpesaOut.setB2CUtilityAccountAvailableFunds( toBigDecimal( val ) );
-					}
-		    	}
+						if(key.equals(B2C_TRANSACTIONAMOUNT)){
+							mpesaOut.setTransactionAmount( toBigDecimal(val) );
+						}
+						if(key.equals(B2C_CHARGES_PAID_ACCOUNT_AVAILABLE_FUNDS)){
+							mpesaOut.setB2CChargesPaidAccountAvailableFunds( toBigDecimal(val) );
+						}
+						if(key.equals(B2C_RECIPIENT_IS_REGISTERED_CUSTOMER)){
+							mpesaOut.setB2CRecipientIsRegisteredCustomer( val.equalsIgnoreCase("Y") );
+						}
+						if(key.equals(B2C_TRANSACTION_COMPLETED_DATE_TIME)){
+							Date transactionCompletedDateTime = null;
+							try {
+								transactionCompletedDateTime = source_format2.parse( val );
+								mpesaOut.setTransactionCompletedDateTime( transactionCompletedDateTime );
+							} catch (ParseException e) {
+								logger.error(e.getMessage());
+							}
+						}
+						if(key.equals(B2C_RECEIVER_PARTY_PUBLIC_NAME)){
+							mpesaOut.setReceiverPartyPublicName( val );
+						}
+						if(key.equals(B2C_WORKING_ACCOUNT_AVAILABLE_FUNDS)){
+							mpesaOut.setB2CWorkingAccountAvailableFunds( toBigDecimal( val ) );
+						}
+						if(key.equals(B2C_UTILITY_ACCOUNT_AVAILABLE_FUNDS)){
+							mpesaOut.setB2CUtilityAccountAvailableFunds( toBigDecimal( val ) );
+						}
+			    	}
+			    }
+			    
 		    }
 	    
 		}catch(Exception e){

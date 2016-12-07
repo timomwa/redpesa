@@ -17,6 +17,8 @@ import co.ke.technovation.entity.RedCrossWinner;
 @Remote(RedCrossWinnerEJBI.class)
 public class RedCrossWinnerEJBImpl implements RedCrossWinnerEJBI {
 	
+	private static final String INSUF_BAL = "The balance is insufficient for the transaction.";
+
 	@Inject
 	private RedCrossWinnerDAOI redcrossWinnerDAO;
 	
@@ -44,12 +46,17 @@ public class RedCrossWinnerEJBImpl implements RedCrossWinnerEJBI {
 			
 			RedCrossWinner winnerRec = redcrossWinnerDAO.findBy("ticket_number", mpesaOut.getConversationID());
 			if(winnerRec!=null){
-				if(mpesaOut.getStatus().compareTo(0)==0){
+				
+				if(mpesaOut.getResultCode().compareTo(0)==0){
 					winnerRec.setPayment_status(PaymentStatus.PROCESSED_SUCCESSFULLY.getCode());
+				}else if( (mpesaOut.getResultCode().compareTo(1)==0) & mpesaOut.getResultDesc().equalsIgnoreCase(INSUF_BAL)){  
+					winnerRec.setPayment_status(PaymentStatus.INSUFFICIENT_BALANCE.getCode());
 				}else{
 					winnerRec.setPayment_status( PaymentStatus.PROCESSED_IN_ERROR.getCode() ) ;
 				}
+				
 				winnerRec = redcrossWinnerDAO.save(winnerRec);
+				
 			}else{
 				logger.warn(" Could not find winner record with Ticket number: "+mpesaOut.getConversationID());
 			}

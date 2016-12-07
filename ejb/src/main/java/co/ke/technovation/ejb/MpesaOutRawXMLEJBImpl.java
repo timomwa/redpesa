@@ -1,5 +1,7 @@
 package co.ke.technovation.ejb;
 
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -21,6 +23,12 @@ public class MpesaOutRawXMLEJBImpl implements MpesaOutRawXMLEJBI {
 	@EJB
 	private XMLUtilsI xmlUtils;
 	
+	@Override
+	public List<MpesaOutRawXML> listUnprocessed(int limit){
+		return mpesaOutRawDAO.listUnprocessed(limit);
+	}
+	
+	@Override
 	public MpesaOutRawXML save(MpesaOutRawXML mpesaOutRawXML) throws Exception{
 		return mpesaOutRawDAO.save(mpesaOutRawXML);
 	}

@@ -16,8 +16,14 @@ public class MpesaOutEJBImpl implements MpesaOutEJBI {
 	@Inject
 	private MpesaOutDAOI mpesaOutDAO;
 	
+	@Override
 	public MpesaOut save(MpesaOut mpesaOut) throws Exception{
 		return mpesaOutDAO.save(mpesaOut);
+	}
+	
+	@Override
+	public MpesaOut findByTransactionId(String transID){
+		return mpesaOutDAO.findBy("transId", transID);
 	}
 
 }

@@ -6,4 +6,6 @@ public interface MpesaOutEJBI {
 
 	public MpesaOut save(MpesaOut mpesaOut) throws Exception;
 
+	public MpesaOut findByTransactionId(String transID);
+
 }
