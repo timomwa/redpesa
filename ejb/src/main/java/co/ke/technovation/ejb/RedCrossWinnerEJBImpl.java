@@ -2,12 +2,14 @@ package co.ke.technovation.ejb;
 
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
+import co.ke.technovation.dao.MpesaOutDAOI;
 import co.ke.technovation.dao.RedCrossWinnerDAOI;
 import co.ke.technovation.entity.MpesaOut;
 import co.ke.technovation.entity.PaymentStatus;
@@ -21,6 +23,9 @@ public class RedCrossWinnerEJBImpl implements RedCrossWinnerEJBI {
 
 	@Inject
 	private RedCrossWinnerDAOI redcrossWinnerDAO;
+	
+	@EJB
+	private MpesaOutEJBI mpesaOutEJB;
 	
 	private Logger logger = Logger.getLogger(getClass());
 
@@ -67,4 +72,19 @@ public class RedCrossWinnerEJBImpl implements RedCrossWinnerEJBI {
 		}
 		return false;
 	}
+	
+	@Override
+	public boolean winnerSuccessfullyPaid(RedCrossWinner winner){
+		MpesaOut payment = mpesaOutEJB.getPaymentFromTicketNumber(winner);//conversationID in real sense.
+		if(payment==null){
+			return false;
+		}else{
+			if(payment.getResultCode().compareTo(0)==0)
+				return true;
+			else
+				return false;
+		}
+	}
+	
+	
 }

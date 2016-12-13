@@ -12,5 +12,7 @@ public interface RedCrossWinnerEJBI {
 	public List<RedCrossWinner> getWinners(int limit);
 	
 	public boolean updatePaymentStatus(MpesaOut mpesaOut);
+	
+	public boolean winnerSuccessfullyPaid(RedCrossWinner winner);
 
 }

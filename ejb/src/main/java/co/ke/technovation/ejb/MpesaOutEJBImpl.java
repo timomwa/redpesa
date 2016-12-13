@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import co.ke.technovation.dao.MpesaOutDAOI;
 import co.ke.technovation.entity.MpesaOut;
+import co.ke.technovation.entity.RedCrossWinner;
 
 @Stateless
 public class MpesaOutEJBImpl implements MpesaOutEJBI {
@@ -24,6 +25,11 @@ public class MpesaOutEJBImpl implements MpesaOutEJBI {
 	@Override
 	public MpesaOut findByTransactionId(String transID){
 		return mpesaOutDAO.findBy("transId", transID);
+	}
+	
+	@Override
+	public MpesaOut getPaymentFromTicketNumber(RedCrossWinner winner){
+		return mpesaOutDAO.findBy("conversationID", winner.getTicket_number());
 	}
 
 }
