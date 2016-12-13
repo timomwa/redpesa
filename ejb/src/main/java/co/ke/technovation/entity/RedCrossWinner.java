@@ -173,6 +173,7 @@ public class RedCrossWinner  implements Serializable  {
 		RedCrossWinner that = (RedCrossWinner) obj;
 		return ( (this.getTicket_number().equals( that.getTicket_number() )) ) ;
 	}
+	
 	@Override
 	public String toString() {
 		return "RedCrossWinner [id=" + id + ",\ndate_played=" + date_played + ",\nticket_number=" + ticket_number
