@@ -33,7 +33,8 @@ allprojects {
 		compile group: 'org.hibernate', name: 'hibernate-infinispan', version: '5.0.0.Final'
 		compile group: 'org.hibernate', name: 'hibernate-annotations', version: '3.5.6-Final'
 		
-		compile group: 'org.jasypt', name: 'jasypt-hibernate4', version: '1.9.0'
+		//runtime group: 'org.jasypt', name: 'jasypt-hibernate4', version: '1.9.0'
+		//runtime group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.6'
 		//runtime 'org.hibernate:hibernate-search-orm:5.1.1.Final'
 	 	//runtime 'org.jasypt:jasypt-hibernate4:1.9.0'
 	 	
@@ -79,7 +80,8 @@ dependencies {
 	//earlib group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.1.0.Final'
 	//earlib group: 'org.hibernate', name: 'hibernate-validator-annotation-processor', version: '5.1.0.Final'
 	
-	//earlib group: 'org.jasypt', name: 'jasypt-hibernate4', version: '1.9.0' 
+	earlib group: 'org.jasypt', name: 'jasypt-hibernate4', version: '1.9.0'
+	earlib group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.6'
 	
 	
 	//earlib group: 'net.bootsfaces', name: 'bootsfaces', version: '0.9.1'

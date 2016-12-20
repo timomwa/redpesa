@@ -39,4 +39,22 @@
 		</properties>
 	</persistence-unit>
 	
+	
+	
+	<persistence-unit name="redcross-reportingPU" transaction-type="JTA">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<jta-data-source>java:/redpesa-reportingDS</jta-data-source>
+		<class>co.ke.technovation.entity.SMS</class>
+		<class>co.ke.technovation.entity.SMSConfig</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<properties>
+			<property name="hibernate.hbm2ddl.auto" value="validate" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="encryptorRegisteredName" value="strongHibernateEncryptor"/>
+			<!--property name="hibernate.default_schema" value="red_cross"/-->
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.connection.release_mode" value="after_transaction" />
+		</properties>
+	</persistence-unit>
+	
 </persistence>
